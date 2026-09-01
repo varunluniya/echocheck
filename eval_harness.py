@@ -1,14 +1,13 @@
 """
-Simple Eval Harness
-FDE Learning Plan — Guide 1, Assignment 3
+Eval Harness
 
-Requirements (Guide 1, Section 9.2, Assignment 3):
+Project spec:
   - Function takes: a list of dicts with 'question' and 'expected_answer' keys.
   - For each question, call the model and compare the response to the expected answer.
   - Return: total accuracy, list of failed cases, and average consistency score
     across 3 runs per question.
 
-Grading bar (per the guide): a strong submission includes the consistency
+Design bar: a strong submission includes the consistency
 score (3-run agreement), not just binary correct/wrong, handles API errors
 gracefully, and uses clear variable names.
 
@@ -203,7 +202,7 @@ def run_eval(qa_pairs: list[dict], client: ModelClient | None = None,
       - average_consistency: for each question, the fraction of its runs that
         agree with the MAJORITY answer for that question (1.0 = all 3 runs
         gave the same answer, regardless of correctness); averaged over all
-        questions. This is the "3-run agreement" score the assignment asks for,
+        questions. This is the "3-run agreement" score this project targets,
         distinct from accuracy -- a model can be perfectly consistent and
         consistently wrong, or accurate but erratic.
 

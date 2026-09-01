@@ -1,8 +1,7 @@
 """
 Run the eval harness on a set of test cases and print the report.
 
-Per the assignment: "Submit: Working Python code with output from running
-it on at least 5 test cases." This file runs 7, covering a mix of clean
+This file runs 7 test cases, covering a mix of clean
 factual questions and a couple engineered to be borderline (to make sure
 failed_cases and consistency actually show something other than a perfect
 1.0 / 1.0 report).

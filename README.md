@@ -1,4 +1,7 @@
-# LLM Eval Harness
+# EchoCheck
+
+_A provider-agnostic LLM eval harness that measures accuracy and run-to-run consistency separately._
+
 
 A small, provider-agnostic eval harness that measures both **accuracy** and
 **run-to-run consistency** for any LLM API — not just binary right/wrong,
@@ -91,8 +94,6 @@ pytest tests/
   on purpose — collapsing them into one score is the most common weak-eval
   pattern this project is built to avoid.
 
-## Background
+## Why this exists
 
-Started as Guide 1, Assignment 3 in a self-directed FDE (Forward Deployed
-Engineer) learning program — "write working code that measures model output
-consistency." Extended into a CLI + test suite for this portfolio version.
+Most "eval" scripts report a single right/wrong number and call it a day. That hides exactly the failure mode that matters most in practice: a model that's accurate on average but inconsistent run to run. This harness keeps the two signals separate on purpose, with a CLI and test suite built around that idea.

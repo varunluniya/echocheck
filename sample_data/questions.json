@@ -1,0 +1,9 @@
+[
+  {"question": "What is the capital of France?", "expected_answer": "Paris"},
+  {"question": "What is 12 * 8?", "expected_answer": "96"},
+  {"question": "Who wrote 'Pride and Prejudice'?", "expected_answer": "Jane Austen"},
+  {"question": "What is the boiling point of water in Celsius?", "expected_answer": "100"},
+  {"question": "What is the largest planet in our solar system?", "expected_answer": "Jupiter"},
+  {"question": "What language is primarily used for iOS app development?", "expected_answer": "Swift"},
+  {"question": "What is the airspeed velocity of an unladen swallow?", "expected_answer": "11 meters per second"}
+]

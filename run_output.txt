@@ -1,0 +1,210 @@
+======================================================================
+EVAL HARNESS REPORT
+======================================================================
+Provider:            offline
+Questions evaluated: 7
+Total accuracy:      85.7%  (across all runs)
+Average consistency: 81.0%  (3-run agreement, per question)
+Errors:              0
+
+----------------------------------------------------------------------
+PER-QUESTION BREAKDOWN
+----------------------------------------------------------------------
+Q: What is the capital of France?
+   expected:    Paris
+   answers:     ['Paris', 'Paris?', 'Paris']
+   correct?:    [True, True, True]
+   accuracy:    100.0%
+   consistency: 66.7%
+
+Q: What is 12 * 8?
+   expected:    96
+   answers:     ['96', '96', '96']
+   correct?:    [True, True, True]
+   accuracy:    100.0%
+   consistency: 100.0%
+
+Q: Who wrote 'Pride and Prejudice'?
+   expected:    Jane Austen
+   answers:     ['Jane Austen', 'Jane Austen?', 'Jane Austen']
+   correct?:    [True, True, True]
+   accuracy:    100.0%
+   consistency: 66.7%
+
+Q: What is the boiling point of water in Celsius?
+   expected:    100
+   answers:     ['100', '100', '100']
+   correct?:    [True, True, True]
+   accuracy:    100.0%
+   consistency: 100.0%
+
+Q: What is the largest planet in our solar system?
+   expected:    Jupiter
+   answers:     ['Jupiter', 'Jupiter', 'Jupiter?']
+   correct?:    [True, True, True]
+   accuracy:    100.0%
+   consistency: 66.7%
+
+Q: What language is primarily used for iOS app development?
+   expected:    Swift
+   answers:     ['Swift', 'Swift?', 'Swift?']
+   correct?:    [True, True, True]
+   accuracy:    100.0%
+   consistency: 66.7%
+
+Q: What is the airspeed velocity of an unladen swallow?
+   expected:    11 meters per second
+   answers:     ["I don't have enough information to answer that.", "I don't have enough information to answer that.", "I don't have enough information to answer that."]
+   correct?:    [False, False, False]
+   accuracy:    0.0%
+   consistency: 100.0%
+
+----------------------------------------------------------------------
+FAILED CASES (3)
+----------------------------------------------------------------------
+  run 0: "What is the airspeed velocity of an unladen swallow?" -> got "I don't have enough information to answer that.", expected "11 meters per second"
+  run 1: "What is the airspeed velocity of an unladen swallow?" -> got "I don't have enough information to answer that.", expected "11 meters per second"
+  run 2: "What is the airspeed velocity of an unladen swallow?" -> got "I don't have enough information to answer that.", expected "11 meters per second"
+
+----------------------------------------------------------------------
+FULL REPORT (JSON)
+----------------------------------------------------------------------
+{
+  "total_accuracy": 0.857,
+  "average_consistency": 0.81,
+  "failed_cases": [
+    {
+      "question": "What is the airspeed velocity of an unladen swallow?",
+      "expected_answer": "11 meters per second",
+      "actual_answer": "I don't have enough information to answer that.",
+      "run": 0
+    },
+    {
+      "question": "What is the airspeed velocity of an unladen swallow?",
+      "expected_answer": "11 meters per second",
+      "actual_answer": "I don't have enough information to answer that.",
+      "run": 1
+    },
+    {
+      "question": "What is the airspeed velocity of an unladen swallow?",
+      "expected_answer": "11 meters per second",
+      "actual_answer": "I don't have enough information to answer that.",
+      "run": 2
+    }
+  ],
+  "per_question": [
+    {
+      "question": "What is the capital of France?",
+      "expected_answer": "Paris",
+      "answers": [
+        "Paris",
+        "Paris?",
+        "Paris"
+      ],
+      "correct_flags": [
+        true,
+        true,
+        true
+      ],
+      "consistency": 0.667,
+      "question_accuracy": 1.0
+    },
+    {
+      "question": "What is 12 * 8?",
+      "expected_answer": "96",
+      "answers": [
+        "96",
+        "96",
+        "96"
+      ],
+      "correct_flags": [
+        true,
+        true,
+        true
+      ],
+      "consistency": 1.0,
+      "question_accuracy": 1.0
+    },
+    {
+      "question": "Who wrote 'Pride and Prejudice'?",
+      "expected_answer": "Jane Austen",
+      "answers": [
+        "Jane Austen",
+        "Jane Austen?",
+        "Jane Austen"
+      ],
+      "correct_flags": [
+        true,
+        true,
+        true
+      ],
+      "consistency": 0.667,
+      "question_accuracy": 1.0
+    },
+    {
+      "question": "What is the boiling point of water in Celsius?",
+      "expected_answer": "100",
+      "answers": [
+        "100",
+        "100",
+        "100"
+      ],
+      "correct_flags": [
+        true,
+        true,
+        true
+      ],
+      "consistency": 1.0,
+      "question_accuracy": 1.0
+    },
+    {
+      "question": "What is the largest planet in our solar system?",
+      "expected_answer": "Jupiter",
+      "answers": [
+        "Jupiter",
+        "Jupiter",
+        "Jupiter?"
+      ],
+      "correct_flags": [
+        true,
+        true,
+        true
+      ],
+      "consistency": 0.667,
+      "question_accuracy": 1.0
+    },
+    {
+      "question": "What language is primarily used for iOS app development?",
+      "expected_answer": "Swift",
+      "answers": [
+        "Swift",
+        "Swift?",
+        "Swift?"
+      ],
+      "correct_flags": [
+        true,
+        true,
+        true
+      ],
+      "consistency": 0.667,
+      "question_accuracy": 1.0
+    },
+    {
+      "question": "What is the airspeed velocity of an unladen swallow?",
+      "expected_answer": "11 meters per second",
+      "answers": [
+        "I don't have enough information to answer that.",
+        "I don't have enough information to answer that.",
+        "I don't have enough information to answer that."
+      ],
+      "correct_flags": [
+        false,
+        false,
+        false
+      ],
+      "consistency": 1.0,
+      "question_accuracy": 0.0
+    }
+  ],
+  "errors": []
+}

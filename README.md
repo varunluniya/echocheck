@@ -52,6 +52,17 @@ curl -X POST localhost:8000/runs -H 'content-type: application/json' -d '{"suite
 | `POST /adjudicate` · `POST /runs/{id}/regrade` | Human ruling → answer key → re-score |
 | `GET /suites/{name}/flaky` | Questions with unstable answers across runs |
 
+## Demo data
+
+`python seed.py` fills `data/echocheck.db` with synthetic history so every endpoint returns something meaningful on first run: A 20-question lending-ops suite plus the sample suite, seven runs of a fictional support bot across five versions (one promoted baseline, one blocked regression), two human adjudications, and flaky-question history.
+
+```bash
+python seed.py            # create data/echocheck.db
+python seed.py --reset    # rebuild it from scratch
+```
+
+The Docker image seeds `/data` on first boot (set `GEN4_SEED=0` to start empty). All of it is synthetic: no real customers, patients, tickets or model outputs. `GET /health` shows the dataset's counts.
+
 ---
 
 ## The original engine (v1)

@@ -21,7 +21,7 @@ Offline, the grader falls back to a strict fuzzy match (similarity of at least 0
 
 ## Consistency
 Consistency is the share of runs that agree with the majority answer for a question. It is reported separately from accuracy.
-A question whose consistency stays below 100% across several runs is flaky and should be rewritten or given a tighter reference.
+For numeric questions, answers agree when they state the same value however it is phrased; for text questions, when they both contain the reference answer. A question whose average consistency stays below 80% across several runs is flaky and should be rewritten or given a tighter reference.
 
 ## Regression gate
 A new run is compared with the suite's promoted baseline. Block promotion if overall accuracy drops by more than 2 percentage points,

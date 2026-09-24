@@ -23,14 +23,26 @@ from pathlib import Path
 
 from eval_harness import ModelCallError, ModelClient
 from gen4 import Context, KnowledgeBase, LLMClient, Memory, Trace
-from grader import grade, normalise
+from grader import _numbers, grade, grade_alias, is_numeric_expected, normalise
 
 SYSTEM = "echocheck"
 HERE = Path(__file__).parent
 REGRESSION_DROP = 0.02
+FLAKY_BELOW = 0.8  # average run-to-run agreement under this marks a question flaky
 RUBRIC = {"numeric": "Numeric answers", "alias": "Named entities and short answers",
           "judge": "Open-ended answers", "fuzzy": "Open-ended answers",
           "adjudicated": "Accepted aliases", "empty": "Consistency", "error": "Consistency"}
+
+
+def _answer_key(answer: str, expected: str) -> str:
+    """What 'the same answer' means for consistency: for numeric questions the
+    set of values stated ("10,000", "Rs 10000" and "The answer is 10,000."
+    agree); otherwise the normalised text."""
+    if is_numeric_expected(expected):
+        vals = sorted({round(v, 6) for v in _numbers(answer)})
+        return "num:" + ",".join(f"{v:g}" for v in vals) if vals else "num:none"
+    v = grade_alias(answer, [expected])
+    return "ref" if v is not None and v.correct else normalise(answer)
 
 
 class EchoCheckService:
@@ -128,7 +140,7 @@ class EchoCheckService:
             ok = [v.correct for v in verdicts]
             hits += sum(ok)
             total += max(len(ok), runs)
-            norm = [normalise(a) for a in got if a]
+            norm = [_answer_key(a, c["expected_answer"]) for a in got if a]
             cons = (Counter(norm).most_common(1)[0][1] / len(norm)) if norm else 0.0
             per_q.append({"id": c["id"], "question": c["question"], "expected": c["expected_answer"],
                           "answers": got, "verdicts": [v.as_dict() for v in verdicts],
@@ -191,11 +203,11 @@ class EchoCheckService:
         return {"run_id": run_id, "before": d["output"]["accuracy"], "after": report["accuracy"],
                 "per_question": report["per_question"]}
 
-    def flaky(self, suite: str, min_runs: int = 2) -> list[dict]:
+    def flaky(self, suite: str, min_runs: int = 2, below: float = FLAKY_BELOW) -> list[dict]:
         hist = [h for h in self.memory.history(f"suite:{suite}", limit=200)]
         seen: dict[str, list[float]] = {}
         for h in hist:
             for q in h["output"]["per_question"]:
                 seen.setdefault(q["id"], []).append(q["consistency"])
         return [{"id": qid, "runs_seen": len(c), "avg_consistency": round(sum(c) / len(c), 3)}
-                for qid, c in seen.items() if len(c) >= min_runs and sum(c) / len(c) < 1.0]
+                for qid, c in seen.items() if len(c) >= min_runs and sum(c) / len(c) < below]

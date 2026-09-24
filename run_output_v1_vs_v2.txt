@@ -1,0 +1,29 @@
+case                        truth  v1     v2     method / detail
+exact                       ✓      ✓      ✓      alias: exact match 'Paris'
+trailing punctuation        ✓      ✓      ✓      alias: exact match 'Paris'
+full sentence               ✓      ✗!     ✓      alias: contains 'Paris'
+negated mention             ✗      ✗      ✗      alias: 'Paris' mentioned but negated
+sentence                    ✓      ✗!     ✓      alias: contains 'Jane Austen'
+wrong entity                ✗      ✗      ✗      fuzzy: similarity 0.30
+case                        ✓      ✓      ✓      alias: exact match 'Jupiter'
+wrong                       ✗      ✗      ✗      fuzzy: similarity 0.31
+qualified                   ✓      ✗!     ✓      alias: contains 'Swift'
+near-miss symbol            ✗      ✗      ✗      fuzzy: similarity 0.50
+exact number                ✓      ✓      ✓      numeric: value 96 matched
+number in sentence          ✓      ✗!     ✓      numeric: value 96 matched
+digit swap                  ✗      ✗      ✗      numeric: expected 96, got [69.0]
+hedged                      ✗      ✗      ✗      numeric: hedged between several values [96.0, 98.0]
+unit attached               ✓      ✗!     ✓      numeric: value 100 matched (c)
+unit words                  ✓      ✗!     ✓      numeric: value 100 matched (c)
+10x error, fuzzy-similar    ✗      ✓!     ✗      numeric: expected 1000, got [10000.0]
+thousands separator         ✓      ✗!     ✓      numeric: value 1000 matched
+within tolerance            ✓      ✗!     ✓      numeric: value 3.14 matched
+year digit swap             ✗      ✗      ✗      numeric: expected 2019, got [2091.0]
+unit alias                  ✓      ✗!     ✓      numeric: value 11 matched (m/s)
+wrong unit                  ✗      ✗      ✗      numeric: unit mismatch: expected m/s, got km/h
+no value                    ✗      ✗      ✗      numeric: no number in answer
+qualified                   ✓      ✗!     ✓      alias: contains 'Mumbai'
+alias unknown until adjudic ✗      ✗      ✗      fuzzy: similarity 0.24
+
+v1 agreement with human labels: 14/25 (false passes 1, false fails 10)
+v2 agreement with human labels: 25/25

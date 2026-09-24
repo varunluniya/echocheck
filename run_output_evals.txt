@@ -1,0 +1,6 @@
+== EchoCheck eval ==
+cases=27 runs/case=3 accuracy=100.0% consistency=100.0%
+  adjudication                 acc=100.0% cons=100.0% n=1
+  grader                       acc=100.0% cons=100.0% n=25
+  regression                   acc=100.0% cons=100.0% n=1
+GATE: PASS

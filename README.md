@@ -1,5 +1,63 @@
 # EchoCheck
 
+_Continuous LLM evaluation: accuracy and consistency kept separate, a grader that is itself evaluated, regression gating against a baseline, and human rulings that make the grader smarter._
+
+[![ci](https://github.com/varunluniya/echocheck/actions/workflows/ci.yml/badge.svg)](https://github.com/varunluniya/echocheck/actions/workflows/ci.yml)
+
+## What's new in v2: an intelligent, deployable service
+
+| Layer | In EchoCheck |
+|---|---|
+| **Retrieval** | Grading rubric sections behind each verdict method are cited in every run |
+| **Context** | Suite, model label, provider (live, offline or recorded), promoted baseline |
+| **Memory** | Every run with raw answers, baselines, and per-question answer keys (aliases and rejections) |
+| **Feedback** | `POST /adjudicate` teaches the answer key, `regrade` shows the effect, run history surfaces flaky questions |
+
+**Routed grader** (`grader.py`): numeric with units → alias with negation guard → LLM judge (live) → strict fuzzy.
+
+| | v1 matcher | v2 grader |
+|---|---|---|
+| Agreement with 25 human-labelled grading cases | 14/25 | **25/25** |
+| "10,000" graded against "1,000" | ✓ pass (false) | ✗ fail, value mismatch |
+| "The answer is 96." / "100°C" / "About 11 m/s" | ✗ fail (false) | ✓ pass (numeric) |
+| "It is not Paris, it's Lyon." | ✗ | ✗ (negated mention) |
+
+Full framework write-up: [FRAMEWORK.md](FRAMEWORK.md).
+
+## Run it
+
+```bash
+pip install -r requirements-dev.txt
+uvicorn app:app --reload        # http://127.0.0.1:8000/docs
+python -m pytest -q
+python run_evals.py             # evaluates the evaluator: 27 cases x 3 runs
+python compare_v1_v2.py         # before/after proof
+python cli.py --input sample_data/questions.json   # v1 CLI still works
+```
+
+Docker: `docker build -t echocheck . && docker run -p 8000:8000 -v echocheck-data:/data echocheck` · Render: `render.yaml`.
+Set `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` to test live models and enable the LLM judge.
+
+```bash
+curl -X POST localhost:8000/runs -H 'content-type: application/json' -d '{"suite":"sample","model_label":"baseline","runs":3}'
+curl -X POST localhost:8000/suites/sample/baseline/<run_id>
+curl -X POST localhost:8000/runs -H 'content-type: application/json' -d '{"suite":"sample","model_label":"candidate","provider":"anthropic"}'
+```
+
+| Endpoint | Purpose |
+|---|---|
+| `PUT /suites/{name}` · `GET /suites` | Manage question suites |
+| `POST /runs` | Run a suite against a live model, the offline stand-in, or recorded `responses`. Returns accuracy, consistency, per-question verdicts with method, and a regression verdict |
+| `POST /suites/{name}/baseline/{run_id}` | Promote a baseline |
+| `POST /adjudicate` · `POST /runs/{id}/regrade` | Human ruling → answer key → re-score |
+| `GET /suites/{name}/flaky` | Questions with unstable answers across runs |
+
+---
+
+## The original engine (v1)
+
+The v1 demo still runs unchanged; the service wraps it.
+
 _A provider-agnostic LLM eval harness that measures accuracy and run-to-run consistency separately._
 
 
@@ -12,7 +70,7 @@ pip install -r requirements.txt
 python3 cli.py --input sample_data/questions.json
 ```
 
-## Why consistency, not just accuracy
+### Why consistency, not just accuracy
 
 A model can be accurate on average while still being unreliable — right two
 times out of three, or right every time but phrased differently each run.
@@ -28,7 +86,7 @@ On the sample question set, several questions score 100% accuracy but only
 66.7% consistency — the model got the right answer every time but phrased one
 run differently. That gap is exactly what a consistency score is for.
 
-## Usage
+### Usage
 
 ```
 python3 cli.py --input sample_data/questions.json                     # offline mode, no key needed
@@ -40,7 +98,7 @@ python3 cli.py --input sample_data/questions.json --output report.json
 `--input` takes a JSON file: a list of `{"question": ..., "expected_answer": ...}`
 objects (see `sample_data/questions.json`).
 
-## Sample run (offline mode)
+### Sample run (offline mode)
 
 | Metric | Value |
 |---|---|
@@ -57,7 +115,7 @@ run-to-run variance built in (see `ModelClient._call_offline` in
 `--provider anthropic` with the matching API key set and the exact same code
 runs against a live model; nothing else changes.
 
-## Robustness
+### Robustness
 
 Every model call is wrapped in retry with exponential backoff. If a question
 fails on every retry, it's recorded in the report's `errors` list — the
@@ -71,7 +129,7 @@ still returns cleanly.
 pytest tests/
 ```
 
-## Files
+### Files
 
 - `eval_harness.py` — `ModelClient` (OpenAI / Anthropic / offline, retry +
   backoff) and `run_eval()` (the core accuracy + consistency logic).
@@ -82,7 +140,7 @@ pytest tests/
   forced-failure robustness check).
 - `run_output.txt` — captured output from an actual run.
 
-## Design notes
+### Design notes
 
 - **Consistency = majority-agreement across runs**, not average pairwise
   similarity — simpler to reason about and matches how a person would judge
@@ -94,6 +152,6 @@ pytest tests/
   on purpose — collapsing them into one score is the most common weak-eval
   pattern this project is built to avoid.
 
-## Why this exists
+### Why this exists
 
 Most "eval" scripts report a single right/wrong number and call it a day. That hides exactly the failure mode that matters most in practice: a model that's accurate on average but inconsistent run to run. This harness keeps the two signals separate on purpose, with a CLI and test suite built around that idea.

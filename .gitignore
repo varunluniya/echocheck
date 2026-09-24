@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 .pytest_cache/
 sample_report.json
+data/
+*.db
+eval_report.json
